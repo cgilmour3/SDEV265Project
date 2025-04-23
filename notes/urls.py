@@ -10,5 +10,7 @@ urlpatterns = [
     path('<int:pk>/edit/', views.note_edit, name='note_edit'),
     path('<int:pk>/delete/', views.note_delete, name='note_delete'),
     path('signup/', views.SignUpView.as_view(), name='register'),
-     path('logout/', views.logout_view, name='logout'), 
+    path('logout/', views.logout_view, name='logout'), 
+    path('export/', views.export_notes, name='export_notes'),
+    path('import/', views.import_notes, name='import_notes'), 
 ]

@@ -1,9 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
-from notes.views import SignUpView
+from django.views.generic import RedirectView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('notes/', include('notes.urls')),  # Include the URLs from the 'notes' app
-    path('accounts/', include('django.contrib.auth.urls')), # For user authentication
-    path('accounts/signup/', SignUpView.as_view(), name='register'),
+    path('notes/', include('notes.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/signup/', include('notes.urls')), # Consider if this is the best place
+    path('', RedirectView.as_view(url='/notes/', permanent=True)), # Add this line
 ]

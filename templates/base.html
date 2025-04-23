@@ -1,41 +1,106 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickNotes</title>
+    <title>NoteNest</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'notes:note_list' %}">QuickNotes</a>
-        <ul class="navbar-nav ml-auto">
-            {% if user.is_authenticated %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="{% url 'notes:note_list' %}">NoteNest</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <span class="navbar-text">Hello, {{ user.username }}</span>
+                    <span class="navbar-text text-light mr-2">Hello, {% if user.is_authenticated %}{{ user.username }}{% else %}Guest{% endif %}</span>
                 </li>
-                <li class="nav-item">
-                    <form method="post" action="{% url 'notes:logout' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="nav-link btn btn-link">Logout</button>
-                    </form>
-                </li>
-            {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register' %}">Register</a>
-                </li>
-            {% endif %}
-        </ul>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <form method="post" action="{% url 'notes:logout' %}" class="form-inline my-2 my-lg-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link nav-link text-light">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'notes:register' %}">Register</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
     </nav>
-    <div class="container mt-4">
-        {% block content %}
-        {% endblock %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" style="padding-top: 56px;"> <div class="sidebar-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{% url 'notes:note_list' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                                My Notes <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'notes:note_create' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-plus"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                                Create New Note
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'notes:import_notes' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                Import Notes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'notes:export_notes' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="12 3 12 15 17 10"></polyline><polyline points="12 3 7 10"></polyline></svg>
+                                Export Notes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form method="post" action="{% url 'notes:logout' %}" class="form-inline my-2 my-lg-0">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-link nav-link text-light">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4" style="padding-top: 60px;"> {% block content %}
+                {% endblock %}
+            </main>
+        </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Simple script to toggle sidebar (optional, for smaller screens)
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.querySelector('main');
+            const toggleButton = document.querySelector('.navbar-toggler');
+
+            if (toggleButton && sidebar && mainContent) {
+                toggleButton.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapse');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
