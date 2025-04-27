@@ -62,6 +62,7 @@ def logout_view(request):
     logout(request)
     return redirect(reverse('login'))
 
+
 @login_required
 def export_notes(request):
     notes = Note.objects.filter(user=request.user).order_by('created_at')

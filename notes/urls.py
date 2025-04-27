@@ -13,4 +13,5 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'), 
     path('export/', views.export_notes, name='export_notes'),
     path('import/', views.import_notes, name='import_notes'), 
+    
 ]
