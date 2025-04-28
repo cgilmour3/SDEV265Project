@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Note
-from .forms import NoteForm
+from .forms import NoteForm, RegistrationForm
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
@@ -14,7 +14,19 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import timezone
 from .forms import ImportNotesForm
 from django.contrib import messages
+from django.contrib.auth import login
 
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('notes:note_list')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
 
 @login_required
 def note_list(request):

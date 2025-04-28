@@ -8,4 +8,5 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/signup/', include('notes.urls')),
     path('', RedirectView.as_view(url='/notes/', permanent=True)), 
+    path('users/', include('users.urls')),
 ]

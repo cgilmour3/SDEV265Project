@@ -8,11 +8,11 @@
         <button type="submit" class="btn btn-primary">Import</button>
         <a href="{% url 'notes:note_list' %}" class="btn btn-secondary ml-2">Cancel</a>
     </form>
-    {# {% if messages %}
+     {% if messages %}
         <ul class="messages mt-3">
             {% for message in messages %}
                 <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
             {% endfor %}
         </ul>
-    {% endif %} #}
+    {% endif %} 
 {% endblock %}

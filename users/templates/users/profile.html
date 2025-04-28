@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>User Profile</h1>
+    <p>Username: {{ user.username }}</p>
+    <p>Date Joined: {{ user.date_joined|date:"F j, Y, g:i a" }}</p>
+    <p>Last Login: {{ user.last_login|date:"F j, Y, g:i a" }}</p>
+    {% endblock %}
