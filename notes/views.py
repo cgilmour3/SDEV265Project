@@ -104,25 +104,32 @@ def import_notes(request):
                 return render(request, 'notes/import_notes.html', {'form': form})
             try:
                 data = json.load(import_file)
+                print(f"Data after json.load(): {data}")
                 imported_count = 0
                 for item in data:
+                    print(f"Attempting to import: {item}")
                     try:
                         Note.objects.create(
-                            user= request.user,
-                            title = item.get('title', 'Untitled'),
-                            content = item.get('content', ''),
-                            created_at = item.et('created_at', timezone.now()),
-                            updated_at = item.get('updated_at', timezone.now())
+                            user=request.user,
+                            title=item.get('title', 'Untitled'),
+                            content=item.get('content', ''),
+                            created_at=item.get('created_at', timezone.now()),
+                            updated_at=item.get('updated_at', timezone.now()),
                         )
                         imported_count += 1
+                        print(f"Successfully imported: {item['title']}")
                     except Exception as e:
-                        messages.error(request, f'Error importing note: {e}')
-                    messages.success(request, f'{imported_count} notes imported successfully.')
-                    return redirect('notes:note_list')
-            except json.JSONDecoderError:
+                        messages.error(request, f'Error importing note (general): {e}')
+                        print(f"Failed to import (general): {item['title']} - Error: {e}")
+                    except django.core.exceptions.ValidationError as e:
+                        messages.error(request, f'Error importing note (validation): {e}')
+                        print(f"Failed to import (validation): {item['title']} - Validation Error: {e}")
+                messages.success(request, f'{imported_count} notes imported successfully.')
+                return redirect('notes:note_list')
+            except json.JSONDecodeError:
                 messages.error(request, 'Invalid JSON format in the uploaded file.')
             except Exception as e:
-                messages.error(request, f'An error occured during import: {e}')
+                messages.error(request, f'An error occured during import (outer): {e}')
         else:
             messages.error(request, 'Please select a file to import.')
     else:
