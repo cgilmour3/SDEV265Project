@@ -16,7 +16,7 @@ from .forms import ImportNotesForm
 from django.contrib import messages
 from django.contrib.auth import login
 
-
+#registration view
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -37,7 +37,7 @@ def note_list(request):
 def note_detail(request, pk):
     note = get_object_or_404(Note, pk=pk, user=request.user)
     return render(request, 'notes/note_detail.html', {'note': note})
-
+#create note view
 @login_required
 def note_create(request):
     if request.method == 'POST':
@@ -50,7 +50,7 @@ def note_create(request):
     else:
         form = NoteForm()
     return render(request, 'notes/note_form.html', {'form': form})
-
+#edit note view
 @login_required
 def note_edit(request, pk):
     note = get_object_or_404(Note, pk=pk, user=request.user)
@@ -62,7 +62,7 @@ def note_edit(request, pk):
     else:
         form = NoteForm(instance=note)
     return render(request, 'notes/note_form.html', {'form': form})
-
+#delete note view
 @login_required
 def note_delete(request, pk):
     note = get_object_or_404(Note, pk=pk, user=request.user)
@@ -74,7 +74,7 @@ def logout_view(request):
     logout(request)
     return redirect(reverse('login'))
 
-
+#export note view
 @login_required
 def export_notes(request):
     notes = Note.objects.filter(user=request.user).order_by('created_at')
@@ -92,7 +92,7 @@ def export_notes(request):
     response = HttpResponse(json_data, content_type='application/json')
     response['Content-Disposition'] = f'attachment; filename="notes_export_{timezone.now().strftime("%Y%m%d_%H%M%S")}.json"'
     return response
-
+#import note view
 @login_required
 def import_notes(request):
     if request.method == 'POST':

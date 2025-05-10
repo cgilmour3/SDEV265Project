@@ -2,7 +2,7 @@ from django import forms
 from .models import Note
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-
+#all forms for this project
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
